@@ -13,8 +13,11 @@ class TrainProposalRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     trainProposal.priceProposals..sort((a, b) => a.amount.compareTo(b.amount));
-    final price = trainProposal.priceProposals.first;
-    final isAvailable = price.amount == 0 && price.remainingSeat > 0;
+    final price = trainProposal.priceProposals.length > 0
+        ? trainProposal.priceProposals[0]
+        : null;
+    final isAvailable =
+        price != null && price.amount == 0 && price.remainingSeat > 0;
 
     final textTheme = Theme.of(context).textTheme;
     final baseTitleStyle = textTheme.title.copyWith(
@@ -36,20 +39,22 @@ class TrainProposalRow extends StatelessWidget {
         height: 40.0,
         color: isAvailable ? Colors.green : Colors.red,
       ),
-      trailing: Wrap(
-        direction: Axis.vertical,
-        crossAxisAlignment: WrapCrossAlignment.end,
-        spacing: 5.0,
-        children: [
-          Text(
-            "${formatPrice(price.amount)}€",
-            style: isAvailable
-                ? priceStyle.copyWith(color: Colors.green)
-                : priceStyle,
-          ),
-          Text("${price.remainingSeat} places", style: textTheme.caption),
-        ],
-      ),
+      trailing: price != null
+          ? Wrap(
+              direction: Axis.vertical,
+              crossAxisAlignment: WrapCrossAlignment.end,
+              spacing: 5.0,
+              children: [
+                Text(
+                  "${formatPrice(price.amount)}€",
+                  style: isAvailable
+                      ? priceStyle.copyWith(color: Colors.green)
+                      : priceStyle,
+                ),
+                Text("${price.remainingSeat} places", style: textTheme.caption),
+              ],
+            )
+          : Text("Complet", style: priceStyle),
     );
   }
 }

@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:tgv_max_alert/models/payload/payload.dart';
 import 'package:tgv_max_alert/models/sncf_api_response.dart';
-import 'package:dio/dio.dart';
+import 'package:tgv_max_alert/utils/api/api.dart';
 import 'package:tgv_max_alert/utils/utils.dart';
 import 'package:tgv_max_alert/widgets/a_to_b_painter.dart';
 import 'package:tgv_max_alert/widgets/trains_details/train_proposal.dart';
-
-const API_URL = "https://www.oui.sncf/proposition/rest/search-travels/outward";
 
 class AlertTrainsScreen extends StatefulWidget {
   AlertTrainsScreen({Key key}) : super(key: key);
@@ -17,27 +14,6 @@ class AlertTrainsScreen extends StatefulWidget {
 }
 
 class _AlertTrainsScreenState extends State<AlertTrainsScreen> {
-  Future<SncfApiResponse> _fetchApi() async {
-    final httpRes = await Dio().post(
-      API_URL,
-      data: Payload(
-        origin: "PARIS (intramuros)",
-        originCode: "FRPMO",
-        destination: "LE MANS",
-        destinationCode: "FRAET",
-        departureDate: DateTime(2019, 06, 9, 9),
-        passengers: [
-          Passenger(
-            birthDate: DateTime(1998, 05, 13),
-            commercialCardNumber: "HC600394293",
-          ),
-        ],
-      ).toJson(),
-    );
-
-    return SncfApiResponse.fromJson(httpRes.data);
-  }
-
   @override
   Widget build(BuildContext context) {
     const originStyle = TextStyle(
@@ -110,14 +86,14 @@ class _AlertTrainsScreenState extends State<AlertTrainsScreen> {
                 ),
               ),
               child: FutureBuilder<SncfApiResponse>(
-                future: _fetchApi(),
+                future: Api.getTrainsData(),
                 builder: (context, snap) {
                   if (snap.connectionState == ConnectionState.waiting)
                     return const Center(child: CircularProgressIndicator());
                   if (snap.hasError) return Text(snap.error.toString());
 
                   return RefreshIndicator(
-                    onRefresh: _fetchApi,
+                    onRefresh: Api.getTrainsData,
                     child: ListView.separated(
                       itemCount: snap.data.trainProposals.length,
                       separatorBuilder: (_, __) => const Divider(height: 0),
