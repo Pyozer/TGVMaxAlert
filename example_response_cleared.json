@@ -1,0 +1,82 @@
+{
+    "trainProposals": [
+        {
+            "departureDate": "2019-06-13T09:33:00",
+            "arrivalDate": "2019-06-13T10:35:00",
+            "minuteDuration": 62,
+            "priceProposals": [
+                {
+                    "id": "1",
+                    "amount": 60,
+                    "currency": "EUR",
+                    "type": "SEMIFLEX",
+                    "remainingSeat": 165,
+                    "flags": [
+                        "TGVMAX"
+                    ]
+                },
+                {
+                    "id": "2",
+                    "amount": 77,
+                    "currency": "EUR",
+                    "type": "UPSELL",
+                    "remainingSeat": 17,
+                    "flags": [
+                        "TGVMAX"
+                    ]
+                }
+            ],
+            "segments": [
+                {
+                    "id": 1,
+                    "originStationCode": "FRAET",
+                    "departureDate": "2019-06-13T09:33:00",
+                    "destinationStationCode": "FRPMO",
+                    "arrivalDate": "2019-06-13T10:35:00",
+                    "minuteDuration": 62,
+                    "trainType": "TGA",
+                    "trainNumber": "8864",
+                    "onboardServices": [
+                        "HANDICAPE",
+                        "VOITURE_BAR",
+                        "BUSINESS_PREMIERE",
+                        "VELO_PAYANT"
+                    ],
+                    "seatmapAvailable": true,
+                    "transporter": "TGV",
+                    "functionnalId": "2019-06-13T09:33_FRAET_8864_2019-06-13T10:35_FRPMO"
+                }
+            ],
+            "originStationCode": "FRAET",
+            "destinationStationCode": "FRPMO",
+            "transporters": [
+                "TGV"
+            ],
+            "id": "2019-06-13T09:33_FRAET_8864_2019-06-13T10:35_FRPMO"
+        }
+    ],
+    "status": "SUCCESS",
+    "validationErrors": [
+        {
+            "label": "Merci de renseigner le numéro d'abonné TGVmax et une date de naissance au format JJ/MM/AAAA"
+        }
+    ],
+    "itineraryDetails": {
+        "origin": {
+            "cityCode": "FRLME",
+            "cityLabel": "LE MANS",
+            "stationCode": "FRAET",
+            "stationLabel": "LE MANS",
+            "zipCode": "72181"
+        },
+        "destination": {
+            "cityCode": "FRPAR",
+            "cityLabel": "PARIS",
+            "stationCode": "FRPMO",
+            "stationLabel": "PARIS MONTPARNASSE 1 ET 2",
+            "zipCode": "75056"
+        }
+    },
+    "containsFirstTrainOfDay": false,
+    "containsLastTrainOfDay": false
+}
