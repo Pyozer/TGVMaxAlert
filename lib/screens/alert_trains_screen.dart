@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:tgv_max_alert/models/alert.dart';
 import 'package:tgv_max_alert/models/sncf_api_response.dart';
 import 'package:tgv_max_alert/utils/api/api.dart';
 import 'package:tgv_max_alert/utils/utils.dart';
 import 'package:tgv_max_alert/widgets/a_to_b_painter.dart';
 import 'package:tgv_max_alert/widgets/trains_details/train_proposal.dart';
 
-class AlertTrainsScreen extends StatefulWidget {
-  AlertTrainsScreen({Key key}) : super(key: key);
+class AlertTrainsScreen extends StatelessWidget {
+  final Alert alert;
 
-  @override
-  _AlertTrainsScreenState createState() => _AlertTrainsScreenState();
-}
+  AlertTrainsScreen({Key key, @required this.alert}) : super(key: key);
 
-class _AlertTrainsScreenState extends State<AlertTrainsScreen> {
   @override
   Widget build(BuildContext context) {
     const originStyle = TextStyle(
@@ -31,7 +29,7 @@ class _AlertTrainsScreenState extends State<AlertTrainsScreen> {
       appBar: AppBar(
         elevation: 0,
         title: Text(
-          "${capitalize(formatDate(DateTime(2019, 6, 9, 9)))} - ${formatHm(DateTime(2019, 6, 9, 9))}",
+          "${capitalize(formatDate(alert.departureDate))} - ${formatHm(alert.departureDate)}",
         ),
       ),
       backgroundColor: Theme.of(context).primaryColor,
@@ -53,7 +51,7 @@ class _AlertTrainsScreenState extends State<AlertTrainsScreen> {
                         FittedBox(
                           fit: BoxFit.scaleDown,
                           child: Text(
-                            "Paris Montparnasse",
+                            alert.origin,
                             style: originStyle,
                             maxLines: 1,
                           ),
@@ -63,7 +61,7 @@ class _AlertTrainsScreenState extends State<AlertTrainsScreen> {
                         FittedBox(
                           fit: BoxFit.scaleDown,
                           child: Text(
-                            "Gare Le Mans",
+                            alert.destination,
                             style: destinationStyle,
                             maxLines: 1,
                           ),
@@ -79,7 +77,7 @@ class _AlertTrainsScreenState extends State<AlertTrainsScreen> {
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Theme.of(context).canvasColor,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(25.0),
                   topRight: Radius.circular(25.0),
