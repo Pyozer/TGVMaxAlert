@@ -15,10 +15,10 @@ class HomeScreen extends StatelessWidget {
       10,
       (_) => Alert(
             origin: "Le Mans",
-            originCode: "FRETK",
+            originCode: "FRAET",
             destination: "Paris",
             destinationCode: "FRPMO",
-            departureDate: DateTime(2019, 6, 10, 14),
+            departureDate: DateTime(2019, 6, 11, 19),
           ),
     ));
     return Scaffold(

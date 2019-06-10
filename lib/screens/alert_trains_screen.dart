@@ -84,14 +84,18 @@ class AlertTrainsScreen extends StatelessWidget {
                 ),
               ),
               child: FutureBuilder<SncfApiResponse>(
-                future: Api.getTrainsData(),
+                future: Api.getTrainsData(alert),
                 builder: (context, snap) {
                   if (snap.connectionState == ConnectionState.waiting)
                     return const Center(child: CircularProgressIndicator());
                   if (snap.hasError) return Text(snap.error.toString());
 
+                  if (snap.data.status == "NO_RESULTS")
+                    return Center(child: Text("No result :/"));
+
+
                   return RefreshIndicator(
-                    onRefresh: Api.getTrainsData,
+                    onRefresh: () => Api.getTrainsData(alert),
                     child: ListView.separated(
                       itemCount: snap.data.trainProposals.length,
                       separatorBuilder: (_, __) => const Divider(height: 0),
