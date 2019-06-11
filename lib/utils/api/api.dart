@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:tgv_max_alert/models/alert.dart';
 import 'package:tgv_max_alert/models/payload/payload.dart';
 import 'package:tgv_max_alert/models/sncf_api_response.dart';
+import 'package:tgv_max_alert/models/sncf_gare.dart';
 
 const API_URL = "https://www.oui.sncf/proposition/rest/search-travels/outward";
 
@@ -29,5 +30,23 @@ class Api {
     );
 
     return SncfApiResponse.fromJson(httpRes.data);
+  }
+
+  static Future<List<SncfStation>> getStations(
+    String search, [
+    bool isOrigin = true,
+  ]) async {
+    final httpRes = await Dio().get(
+      'https://booking.oui.sncf/booking/autocomplete-d2d',
+      queryParameters: {
+        'uc': 'fr-FR',
+        'searchField': isOrigin ? 'origin' : 'destination',
+        'searchTerm': search,
+      },
+    );
+
+    return List<SncfStation>.from(
+      httpRes.data.map((x) => SncfStation.fromJson(x)),
+    );
   }
 }

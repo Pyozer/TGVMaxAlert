@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 String capitalize(String text) {
@@ -15,5 +16,9 @@ String formatDuration(Duration duration) {
 }
 
 String formatHm(DateTime date) => DateFormat.Hm().format(date);
+String formatTimeHm(TimeOfDay time) {
+  return formatHm(DateTime(2019, 1, 1, time.hour, time.minute));
+}
 
 String formatDate(DateTime date) => DateFormat.MMMEd('fr_FR').format(date);
+String formatMediumDate(DateTime date) => DateFormat.MMMMEEEEd('fr_FR').format(date);
