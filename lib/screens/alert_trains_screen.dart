@@ -16,7 +16,7 @@ class AlertTrainsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     const originStyle = TextStyle(
       color: Colors.white,
-      fontSize: 28.0,
+      fontSize: 30.0,
       fontWeight: FontWeight.w700,
     );
     final destinationStyle = originStyle.copyWith(
@@ -27,10 +27,11 @@ class AlertTrainsScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
         title: Text(
           "${capitalize(formatDate(alert.departureDate))} - ${formatHm(alert.departureDate)}",
         ),
+        centerTitle: true,
+        elevation: 0,
       ),
       backgroundColor: Theme.of(context).primaryColor,
       body: Column(
@@ -92,7 +93,6 @@ class AlertTrainsScreen extends StatelessWidget {
 
                   if (snap.data.status == "NO_RESULTS")
                     return Center(child: Text("No result :/"));
-
 
                   return RefreshIndicator(
                     onRefresh: () => Api.getTrainsData(alert),

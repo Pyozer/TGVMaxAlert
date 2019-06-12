@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:meta/meta.dart';
 
 class Alert {
+  String uuid;
   String origin;
   String originCode;
   String destination;
@@ -10,6 +11,7 @@ class Alert {
   DateTime departureDate;
 
   Alert({
+    @required this.uuid,
     @required this.origin,
     @required this.originCode,
     @required this.destination,
@@ -22,6 +24,7 @@ class Alert {
   String toRawJson() => json.encode(toJson());
 
   factory Alert.fromJson(Map<String, dynamic> json) => Alert(
+        uuid: json["uuid"],
         origin: json["origin"],
         originCode: json["originCode"],
         destination: json["destination"],
@@ -30,6 +33,7 @@ class Alert {
       );
 
   Map<String, dynamic> toJson() => {
+        "uuid": uuid,
         "origin": origin,
         "originCode": originCode,
         "destination": destination,

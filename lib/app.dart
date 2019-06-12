@@ -15,19 +15,22 @@ class _AppState extends State<App> {
   @override
   void initState() {
     super.initState();
-    var initAndroid = AndroidInitializationSettings('ic_notif_train');
-    var initIOS = IOSInitializationSettings(
+    final initAndroid = AndroidInitializationSettings('ic_notif_train');
+    final initIOS = IOSInitializationSettings(
       onDidReceiveLocalNotification: onDidReceiveLocalNotification,
     );
-    var initSettings = InitializationSettings(initAndroid, initIOS);
     flutterLocalNotificationsPlugin.initialize(
-      initSettings,
+      InitializationSettings(initAndroid, initIOS),
       onSelectNotification: onSelectNotification,
     );
   }
 
   Future<void> onDidReceiveLocalNotification(
-      int id, String title, String body, String payload) async {
+    int id,
+    String title,
+    String body,
+    String payload,
+  ) async {
     // display a dialog with the notification details, tap ok to go to another page
     await showDialog(
       context: context,
@@ -58,8 +61,7 @@ class _AppState extends State<App> {
       debugPrint('notification payload: ' + payload);
     }
 
-    await Navigator.push(
-      context,
+    await Navigator.of(context).push(
       MaterialPageRoute(builder: (context) => AddAlertScreen()),
     );
   }

@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:tgv_max_alert/models/alert.dart';
 import 'package:tgv_max_alert/models/sncf_gare.dart';
 import 'package:tgv_max_alert/utils/api/api.dart';
+import 'package:tgv_max_alert/utils/preferences.dart';
 import 'package:tgv_max_alert/utils/utils.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:tgv_max_alert/widgets/station_autocomplete.dart';
+import 'package:uuid/uuid.dart';
 
 class AddAlertScreen extends StatefulWidget {
   AddAlertScreen({Key key}) : super(key: key);
@@ -38,16 +41,19 @@ class _AddAlertScreenState extends State<AddAlertScreen> {
     if (hour != null) setState(() => _hour = hour);
   }
 
-  Widget _buildStation(BuildContext context, SncfStation station) {
-    return ListTile(
-      leading: const Icon(Icons.location_city),
-      title: Text(station.label),
-    );
-  }
-
   void _addAlert() {
     // TODO: Check fields and add alert to sharedpreferences
     // Return the alert on navigation pop
+    final newAlert = Alert(
+      uuid: Uuid().v4(),
+      departureDate: DateTime(_date.year, _date.month, _date.day, _hour.hour, _hour.minute),
+      origin: _departure.label,
+      originCode: _departure.id,
+      destination: _arrival.label,
+      destinationCode: _arrival.id,
+    );
+    Preferences.instance.addAlert(newAlert);
+    Navigator.of(context).pop();
   }
 
   @override
@@ -60,10 +66,12 @@ class _AddAlertScreenState extends State<AddAlertScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Add alert"),
+        centerTitle: true,
         elevation: 0,
       ),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
+      floatingActionButton: FloatingActionButton.extended(
+        icon: const Icon(Icons.add),
+        label: Text("Ajouter"),
         onPressed: _addAlert,
       ),
       body: Stack(
@@ -84,39 +92,25 @@ class _AddAlertScreenState extends State<AddAlertScreen> {
               children: [
                 Text("Departure", style: labelStyle),
                 const SizedBox(height: 5.0),
-                TypeAheadField<SncfStation>(
-                  textFieldConfiguration: TextFieldConfiguration(
-                    decoration: InputDecoration(hintText: "Departure station"),
-                    controller: _departureController,
-                    maxLines: 1,
-                  ),
-                  suggestionsCallback: (pattern) async {
-                    if (pattern.length < 3) return null;
-                    return await Api.getStations(pattern);
-                  },
-                  itemBuilder: _buildStation,
-                  onSuggestionSelected: (suggestion) {
-                    _departure = suggestion;
-                    _departureController.text = suggestion?.label ?? "";
+                StationAutoComplete(
+                  controller: _departureController,
+                  hint: "Departure station",
+                  onSuggestion: Api.getDepartureStations,
+                  onSelect: (station) {
+                    _departure = station;
+                    _departureController.text = station?.label ?? "";
                   },
                 ),
                 const SizedBox(height: 20.0),
                 Text("Arrival", style: labelStyle),
                 const SizedBox(height: 5.0),
-                TypeAheadField<SncfStation>(
-                  textFieldConfiguration: TextFieldConfiguration(
-                    decoration: InputDecoration(hintText: "Arrival station"),
-                    controller: _arrivalController,
-                    maxLines: 1,
-                  ),
-                  suggestionsCallback: (pattern) async {
-                    if (pattern.length < 3) return null;
-                    return await Api.getStations(pattern, false);
-                  },
-                  itemBuilder: _buildStation,
-                  onSuggestionSelected: (suggestion) {
-                    _arrival = suggestion;
-                    _arrivalController.text = suggestion?.label ?? "";
+                StationAutoComplete(
+                  controller: _arrivalController,
+                  hint: "Arrival station",
+                  onSuggestion: Api.getArrivalStations,
+                  onSelect: (station) {
+                    _arrival = station;
+                    _arrivalController.text = station?.label ?? "";
                   },
                 ),
                 const SizedBox(height: 20.0),

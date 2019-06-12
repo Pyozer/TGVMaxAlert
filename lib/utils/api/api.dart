@@ -32,21 +32,26 @@ class Api {
     return SncfApiResponse.fromJson(httpRes.data);
   }
 
-  static Future<List<SncfStation>> getStations(
-    String search, [
-    bool isOrigin = true,
-  ]) async {
+  static Future<List<SncfStation>> getStations(String q, bool isOrigin) async {
     final httpRes = await Dio().get(
       'https://booking.oui.sncf/booking/autocomplete-d2d',
       queryParameters: {
         'uc': 'fr-FR',
         'searchField': isOrigin ? 'origin' : 'destination',
-        'searchTerm': search,
+        'searchTerm': q,
       },
     );
 
     return List<SncfStation>.from(
       httpRes.data.map((x) => SncfStation.fromJson(x)),
-    );
+    ).where((s) => s.category == "station").toList();
+  }
+
+  static Future<List<SncfStation>> getDepartureStations(String search) async {
+    return getStations(search, true);
+  }
+
+  static Future<List<SncfStation>> getArrivalStations(String search) async {
+    return getStations(search, false);
   }
 }
