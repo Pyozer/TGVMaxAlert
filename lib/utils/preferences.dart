@@ -13,6 +13,7 @@ class Preferences {
   List<Alert> _alerts;
 
   List<Alert> getAlerts() {
+    _alerts?.sort((a, b) => a.departureDate.compareTo(b.departureDate));
     return _alerts ?? [];
   }
 

@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tgv_max_alert/main.dart';
 import 'package:tgv_max_alert/models/alert.dart';
+import 'package:tgv_max_alert/models/alert_fetched.dart';
 import 'package:tgv_max_alert/screens/add_alert_screen.dart';
+import 'package:tgv_max_alert/screens/alert_trains_screen.dart';
+import 'package:tgv_max_alert/utils/api/api.dart';
 import 'package:tgv_max_alert/utils/preferences.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:tgv_max_alert/widgets/alert_row.dart';
@@ -15,12 +18,22 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<Alert> _alerts = [];
+  List<AlertFetched> _alerts = [];
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _alerts = Preferences.instance.getAlerts();
+  void initState() {
+    super.initState();
+    _alerts = Preferences.instance
+        .getAlerts()
+        .map((a) => AlertFetched(alert: a))
+        .toList();
+    _fetchAllAlerts();
+  }
+
+  void _onAlertTap(AlertFetched alert) {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (_) => AlertTrainsScreen(data: alert),
+    ));
   }
 
   void _duplicateAlert(Alert alert) {
@@ -28,15 +41,16 @@ class _HomeScreenState extends State<HomeScreen> {
     duplicate.uuid = Uuid().v4();
 
     setState(() {
-      _alerts.add(duplicate);
+      _alerts.add(AlertFetched(alert: duplicate));
       Preferences.instance.addAlert(duplicate);
     });
+    _fetchAllAlerts();
   }
 
   void _deleteAlert(Alert alert) {
     setState(() {
-      _alerts.removeWhere((a) => a.uuid == alert.uuid);
-      Preferences.instance.setAlerts(_alerts);
+      _alerts.removeWhere((a) => a.alert.uuid == alert.uuid);
+      Preferences.instance.setAlerts(_alerts.map((a) => a.alert).toList());
     });
   }
 
@@ -58,6 +72,16 @@ class _HomeScreenState extends State<HomeScreen> {
       platformChannel,
       payload: 'item x',
     );
+  }
+
+  Future<void> _fetchAllAlerts() async {
+    final alerts = await Future.wait<AlertFetched>(
+      Preferences.instance.getAlerts().map<Future<AlertFetched>>((a) async {
+        final sncfResponse = await Api.getTrainsData(a);
+        return AlertFetched(alert: a, sncfResponse: sncfResponse);
+      }),
+    );
+    setState(() => _alerts = alerts);
   }
 
   @override
@@ -99,9 +123,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   itemCount: _alerts.length,
                   itemBuilder: (_, index) {
                     return AlertRow(
-                      alert: _alerts[index],
+                      alertFetched: _alerts[index],
                       onLongPress: _duplicateAlert,
                       onDelete: _deleteAlert,
+                      onTap: () => _onAlertTap(_alerts[index]),
                     );
                   },
                   separatorBuilder: (_, __) => const Divider(height: 0),

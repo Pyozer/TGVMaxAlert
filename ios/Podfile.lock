@@ -1,4 +1,6 @@
 PODS:
+  - background_fetch (0.1.1):
+    - Flutter
   - Flutter (1.0.0)
   - flutter_local_notifications (0.0.1):
     - Flutter
@@ -10,6 +12,7 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
+  - background_fetch (from `.symlinks/plugins/background_fetch/ios`)
   - Flutter (from `.symlinks/flutter/ios`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - keyboard_visibility (from `.symlinks/plugins/keyboard_visibility/ios`)
@@ -20,6 +23,8 @@ SPEC REPOS:
     - Reachability
 
 EXTERNAL SOURCES:
+  background_fetch:
+    :path: ".symlinks/plugins/background_fetch/ios"
   Flutter:
     :path: ".symlinks/flutter/ios"
   flutter_local_notifications:
@@ -30,6 +35,7 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/shared_preferences/ios"
 
 SPEC CHECKSUMS:
+  background_fetch: 385552e57d3bde2c7a3abd6b1edc76b87823b6c4
   Flutter: 58dd7d1b27887414a370fcccb9e645c08ffd7a6a
   flutter_local_notifications: 9e4738ce2471c5af910d961a6b7eadcf57c50186
   keyboard_visibility: 96a24de806fe6823c3ad956c01ba2ec6d056616f

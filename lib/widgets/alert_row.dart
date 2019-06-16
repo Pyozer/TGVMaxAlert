@@ -1,21 +1,23 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tgv_max_alert/models/alert.dart';
-import 'package:tgv_max_alert/screens/alert_trains_screen.dart';
+import 'package:tgv_max_alert/models/alert_fetched.dart';
 import 'package:tgv_max_alert/utils/utils.dart';
 
 typedef void OnEvent(Alert alert);
 
 class AlertRow extends StatelessWidget {
-  final Alert alert;
+  final AlertFetched alertFetched;
   final OnEvent onDelete;
   final OnEvent onLongPress;
+  final VoidCallback onTap;
 
   const AlertRow({
     Key key,
-    @required this.alert,
+    @required this.alertFetched,
     @required this.onLongPress,
     @required this.onDelete,
+    @required this.onTap,
   }) : super(key: key);
 
   Future<bool> _showDeleteSnack(BuildContext context) async {
@@ -51,8 +53,10 @@ class AlertRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isTgvMax = alertFetched.sncfResponse?.isAtLeastOneTgvMax();
+
     return Dismissible(
-      key: Key(alert.uuid),
+      key: Key(alertFetched.alert.uuid),
       direction: DismissDirection.endToStart,
       confirmDismiss: (_) async {
         return _showDeleteSnack(context);
@@ -62,7 +66,7 @@ class AlertRow extends StatelessWidget {
         padding: const EdgeInsets.only(right: 18.0),
         child: Align(
           alignment: Alignment.centerRight,
-          child: Icon(
+          child: const Icon(
             Icons.delete_outline,
             color: Colors.white,
             size: 28.0,
@@ -70,42 +74,51 @@ class AlertRow extends StatelessWidget {
         ),
       ),
       child: InkWell(
-        onTap: () {
-          Navigator.of(context).push(MaterialPageRoute(
-            builder: (_) => AlertTrainsScreen(alert: alert),
-          ));
-        },
-        onLongPress: () => onLongPress(alert),
+        onTap: onTap,
+        onLongPress: () => onLongPress(alertFetched.alert),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Row(
             children: [
-              Image.asset(
-                "assets/images/train_icon.png",
-                height: 40,
-                color: Colors.red,
-              ),
+              isTgvMax == null
+                  ? const SizedBox(
+                      width: 40.0,
+                      child: CircularProgressIndicator(),
+                    )
+                  : Image.asset(
+                      "assets/images/train_icon.png",
+                      height: 40,
+                      color: isTgvMax ? Colors.green : Colors.red,
+                    ),
               const SizedBox(width: 20.0),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildText(alert.origin),
+                    _buildText(alertFetched.alert.origin),
                     const SizedBox(height: 3.0),
-                    _buildText(alert.destination),
+                    _buildText(alertFetched.alert.destination),
                     const SizedBox(height: 8.0),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Icon(Icons.calendar_today,
-                            size: 13.0, color: Colors.grey[700]),
+                        Icon(
+                          Icons.calendar_today,
+                          size: 13.0,
+                          color: Colors.grey[700],
+                        ),
                         const SizedBox(width: 2.0),
-                        Text(capitalize(formatMediumDate(alert.departureDate))),
+                        Text(capitalize(
+                          formatMediumDate(alertFetched.alert.departureDate),
+                        )),
                         const SizedBox(width: 12.0),
-                        Icon(Icons.access_time,
-                            size: 13.0, color: Colors.grey[700]),
+                        Icon(
+                          Icons.access_time,
+                          size: 13.0,
+                          color: Colors.grey[700],
+                        ),
                         const SizedBox(width: 2.0),
-                        Text(formatHm(alert.departureDate)),
+                        Text(formatHm(alertFetched.alert.departureDate)),
                       ],
                     )
                   ],

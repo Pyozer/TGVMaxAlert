@@ -50,6 +50,10 @@ class SncfApiResponse {
         "containsFirstTrainOfDay": containsFirstTrainOfDay,
         "containsLastTrainOfDay": containsLastTrainOfDay,
       };
+
+  bool isAtLeastOneTgvMax() {
+    return trainProposals.any((t) => t.isAtLeastOneTgvMax());
+  }
 }
 
 class ItineraryDetails {
@@ -167,6 +171,8 @@ class TrainProposal {
         "transporters": List<dynamic>.from(transporters.map((x) => x)),
         "id": id,
       };
+
+  bool isAtLeastOneTgvMax() => priceProposals.any((p) => p.isTgvMax());
 }
 
 class PriceProposal {
@@ -208,6 +214,8 @@ class PriceProposal {
         "remainingSeat": remainingSeat,
         "flags": List<dynamic>.from(flags.map((x) => x)),
       };
+
+  bool isTgvMax() => amount == 0.0 && remainingSeat > 0;
 }
 
 class Segment {

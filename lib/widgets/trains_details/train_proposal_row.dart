@@ -7,23 +7,25 @@ class TrainProposalRow extends StatelessWidget {
   final TrainProposal trainProposal;
   final ItineraryDetails itineraryDetails;
 
-  const TrainProposalRow({Key key, this.trainProposal, this.itineraryDetails})
-      : super(key: key);
+  const TrainProposalRow({
+    Key key,
+    this.trainProposal,
+    this.itineraryDetails,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    trainProposal.priceProposals..sort((a, b) => a.amount.compareTo(b.amount));
+    trainProposal.priceProposals.sort((a, b) => a.amount.compareTo(b.amount));
     final price = trainProposal.priceProposals.length > 0
         ? trainProposal.priceProposals[0]
         : null;
-    final isAvailable =
-        price != null && price.amount == 0 && price.remainingSeat > 0;
 
     final textTheme = Theme.of(context).textTheme;
     final baseTitleStyle = textTheme.title.copyWith(
       fontWeight: FontWeight.w700,
     );
     final priceStyle = baseTitleStyle.copyWith(fontSize: 16.0);
+    final isTgvMax = trainProposal.isAtLeastOneTgvMax();
 
     return ListTile(
       title: Text(
@@ -37,7 +39,7 @@ class TrainProposalRow extends StatelessWidget {
       leading: Image.asset(
         "assets/images/train_icon.png",
         height: 40.0,
-        color: isAvailable ? Colors.green : Colors.red,
+        color: isTgvMax ? Colors.green : Colors.red,
       ),
       trailing: price != null
           ? Wrap(
@@ -47,7 +49,7 @@ class TrainProposalRow extends StatelessWidget {
               children: [
                 Text(
                   "${formatPrice(price.amount)}€",
-                  style: isAvailable
+                  style: isTgvMax
                       ? priceStyle.copyWith(color: Colors.green)
                       : priceStyle,
                 ),

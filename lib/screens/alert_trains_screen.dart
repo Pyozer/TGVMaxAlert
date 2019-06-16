@@ -1,16 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:tgv_max_alert/models/alert.dart';
+import 'package:tgv_max_alert/models/alert_fetched.dart';
 import 'package:tgv_max_alert/models/sncf_api_response.dart';
 import 'package:tgv_max_alert/utils/api/api.dart';
 import 'package:tgv_max_alert/utils/utils.dart';
 import 'package:tgv_max_alert/widgets/a_to_b_painter.dart';
-import 'package:tgv_max_alert/widgets/trains_details/train_proposal.dart';
+import 'package:tgv_max_alert/widgets/trains_details/train_proposal_row.dart';
 
 class AlertTrainsScreen extends StatelessWidget {
-  final Alert alert;
+  AlertTrainsScreen({Key key, @required this.data}) : super(key: key);
 
-  AlertTrainsScreen({Key key, @required this.alert}) : super(key: key);
+  final AlertFetched data;
+  final _refreshKey = GlobalKey<RefreshIndicatorState>();
+
+  Future<SncfApiResponse> _fetchData() async {
+    _refreshKey?.currentState?.show();
+    print("FETCH DATA");
+    data.sncfResponse = await Api.getTrainsData(data.alert);
+    return data.sncfResponse;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +37,7 @@ class AlertTrainsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "${capitalize(formatDate(alert.departureDate))} - ${formatHm(alert.departureDate)}",
+          "${capitalize(formatDate(data.alert.departureDate))} - ${formatHm(data.alert.departureDate)}",
         ),
         centerTitle: true,
         elevation: 0,
@@ -52,7 +61,7 @@ class AlertTrainsScreen extends StatelessWidget {
                         FittedBox(
                           fit: BoxFit.scaleDown,
                           child: Text(
-                            alert.origin,
+                            data.alert.origin,
                             style: originStyle,
                             maxLines: 1,
                           ),
@@ -62,7 +71,7 @@ class AlertTrainsScreen extends StatelessWidget {
                         FittedBox(
                           fit: BoxFit.scaleDown,
                           child: Text(
-                            alert.destination,
+                            data.alert.destination,
                             style: destinationStyle,
                             maxLines: 1,
                           ),
@@ -84,30 +93,35 @@ class AlertTrainsScreen extends StatelessWidget {
                   topRight: Radius.circular(25.0),
                 ),
               ),
-              child: FutureBuilder<SncfApiResponse>(
-                future: Api.getTrainsData(alert),
-                builder: (context, snap) {
-                  if (snap.connectionState == ConnectionState.waiting)
-                    return const Center(child: CircularProgressIndicator());
-                  if (snap.hasError) return Text(snap.error.toString());
-
-                  if (snap.data.status == "NO_RESULTS")
-                    return Center(child: Text("No result :/"));
-
-                  return RefreshIndicator(
-                    onRefresh: () => Api.getTrainsData(alert),
-                    child: ListView.separated(
-                      itemCount: snap.data.trainProposals.length,
-                      separatorBuilder: (_, __) => const Divider(height: 0),
-                      itemBuilder: (_, index) {
-                        return TrainProposalRow(
-                          trainProposal: snap.data.trainProposals[index],
-                          itineraryDetails: snap.data.itineraryDetails,
-                        );
-                      },
-                    ),
-                  );
+              child: RefreshIndicator(
+                key: _refreshKey,
+                onRefresh: () {
+                  print("Refresh");
+                  return Api.getTrainsData(data.alert);
                 },
+                child: FutureBuilder<SncfApiResponse>(
+                    future: _fetchData(),
+                    initialData: data.sncfResponse,
+                    builder: (context, snap) {
+                      if (!snap.hasData &&
+                          snap.connectionState == ConnectionState.waiting)
+                        return const Center(child: CircularProgressIndicator());
+                      if (snap.hasError) return Text(snap.error.toString());
+
+                      if (snap.data.status == "NO_RESULTS")
+                        return Center(child: Text("No result :/"));
+
+                      return ListView.separated(
+                        itemCount: snap.data.trainProposals.length,
+                        separatorBuilder: (_, __) => const Divider(height: 0),
+                        itemBuilder: (_, index) {
+                          return TrainProposalRow(
+                            trainProposal: snap.data.trainProposals[index],
+                            itineraryDetails: snap.data.itineraryDetails,
+                          );
+                        },
+                      );
+                    }),
               ),
             ),
           ),
