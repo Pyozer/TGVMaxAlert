@@ -25,7 +25,7 @@ class AlertRow extends StatelessWidget {
         .showSnackBar(
           SnackBar(
             content: Text("Suppression de l'alerte..."),
-            duration: const Duration(seconds: 2),
+            duration: const Duration(milliseconds: 1500),
             action: SnackBarAction(
               label: "Annuler",
               textColor: Colors.yellow,

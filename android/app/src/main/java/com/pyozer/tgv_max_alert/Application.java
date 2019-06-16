@@ -1,3 +1,5 @@
+package com.pyozer.tgv_max_alert;
+
 import com.transistorsoft.flutter.backgroundfetch.BackgroundFetchPlugin;
 
 import io.flutter.app.FlutterApplication;

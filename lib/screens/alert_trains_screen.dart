@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:tgv_max_alert/models/alert.dart';
 import 'package:tgv_max_alert/models/alert_fetched.dart';
 import 'package:tgv_max_alert/models/sncf_api_response.dart';
 import 'package:tgv_max_alert/utils/api/api.dart';
@@ -16,7 +15,6 @@ class AlertTrainsScreen extends StatelessWidget {
 
   Future<SncfApiResponse> _fetchData() async {
     _refreshKey?.currentState?.show();
-    print("FETCH DATA");
     data.sncfResponse = await Api.getTrainsData(data.alert);
     return data.sncfResponse;
   }
@@ -95,10 +93,7 @@ class AlertTrainsScreen extends StatelessWidget {
               ),
               child: RefreshIndicator(
                 key: _refreshKey,
-                onRefresh: () {
-                  print("Refresh");
-                  return Api.getTrainsData(data.alert);
-                },
+                onRefresh: () => Api.getTrainsData(data.alert),
                 child: FutureBuilder<SncfApiResponse>(
                     future: _fetchData(),
                     initialData: data.sncfResponse,

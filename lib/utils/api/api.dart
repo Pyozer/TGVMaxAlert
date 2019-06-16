@@ -1,8 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:tgv_max_alert/models/alert.dart';
+import 'package:tgv_max_alert/models/alert_fetched.dart';
 import 'package:tgv_max_alert/models/payload/payload.dart';
 import 'package:tgv_max_alert/models/sncf_api_response.dart';
 import 'package:tgv_max_alert/models/sncf_gare.dart';
+import 'package:tgv_max_alert/utils/preferences.dart';
 
 const API_URL = "https://www.oui.sncf/proposition/rest/search-travels/outward";
 
@@ -53,5 +55,16 @@ class Api {
 
   static Future<List<SncfStation>> getArrivalStations(String search) async {
     return getStations(search, false);
+  }
+
+  static Future<List<AlertFetched>> getAllAlerts() async {
+    final alerts = Preferences.instance.getAlerts();
+
+    return await Future.wait<AlertFetched>(
+      alerts.map<Future<AlertFetched>>((a) async {
+        final sncfResponse = await Api.getTrainsData(a);
+        return AlertFetched(alert: a, sncfResponse: sncfResponse);
+      }),
+    );
   }
 }

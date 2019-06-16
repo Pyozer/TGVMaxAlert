@@ -5,6 +5,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:tgv_max_alert/main.dart';
 import 'package:tgv_max_alert/screens/add_alert_screen.dart';
 import 'package:tgv_max_alert/screens/home_screen.dart';
+import 'package:tgv_max_alert/utils/background_handler.dart';
 
 class App extends StatefulWidget {
   App({Key key}) : super(key: key);
@@ -13,6 +14,7 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
+  static int notifId = 0;
   @override
   void initState() {
     super.initState();
@@ -30,15 +32,14 @@ class _AppState extends State<App> {
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
     // Configure BackgroundFetch.
-    BackgroundFetch.configure(BackgroundFetchConfig(
-        minimumFetchInterval: 1,
+    BackgroundFetch.configure(
+      BackgroundFetchConfig(
+        minimumFetchInterval: 15,
         stopOnTerminate: false,
-        enableHeadless: true
-    ), () async {
-      print('[BackgroundFetch] Event received');
-
-      BackgroundFetch.finish();
-    }).then((int status) {
+        enableHeadless: true,
+      ),
+      handleBackgroundFetch,
+    ).then((int status) {
       print('[BackgroundFetch] SUCCESS: $status');
     }).catchError((e) {
       print('[BackgroundFetch] ERROR: $e');
@@ -48,6 +49,11 @@ class _AppState extends State<App> {
     // message was in flight, we want to discard the reply rather than calling
     // setState to update our non-existent appearance.
     if (!mounted) return;
+
+    while (DateTime.now().minute < 14) {
+      await Future.delayed(Duration(seconds: 10));
+      BackgroundFetch.start();
+    }
   }
 
   Future<void> onDidReceiveLocalNotification(

@@ -15,6 +15,7 @@ class TrainProposalRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Get lower price
     trainProposal.priceProposals.sort((a, b) => a.amount.compareTo(b.amount));
     final price = trainProposal.priceProposals.length > 0
         ? trainProposal.priceProposals[0]

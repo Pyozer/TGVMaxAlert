@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:tgv_max_alert/main.dart';
 import 'package:tgv_max_alert/models/alert.dart';
 import 'package:tgv_max_alert/models/alert_fetched.dart';
 import 'package:tgv_max_alert/screens/add_alert_screen.dart';
 import 'package:tgv_max_alert/screens/alert_trains_screen.dart';
 import 'package:tgv_max_alert/utils/api/api.dart';
 import 'package:tgv_max_alert/utils/preferences.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:tgv_max_alert/widgets/alert_row.dart';
 import 'package:uuid/uuid.dart';
 
@@ -54,33 +52,8 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  Future<void> _showNotification() async {
-    var androidPlatform = AndroidNotificationDetails(
-      'your channel id',
-      'your channel name',
-      'your channel description',
-      importance: Importance.High,
-      priority: Priority.High,
-      ticker: 'ticker',
-    );
-    var iOSPlatform = IOSNotificationDetails();
-    var platformChannel = NotificationDetails(androidPlatform, iOSPlatform);
-    await flutterLocalNotificationsPlugin.show(
-      0,
-      'Place TGVMax disponible !',
-      'Trajet Le Mans - Paris, le Ven. 14 Juin',
-      platformChannel,
-      payload: 'item x',
-    );
-  }
-
   Future<void> _fetchAllAlerts() async {
-    final alerts = await Future.wait<AlertFetched>(
-      Preferences.instance.getAlerts().map<Future<AlertFetched>>((a) async {
-        final sncfResponse = await Api.getTrainsData(a);
-        return AlertFetched(alert: a, sncfResponse: sncfResponse);
-      }),
-    );
+    final alerts = await Api.getAllAlerts();
     setState(() => _alerts = alerts);
   }
 
