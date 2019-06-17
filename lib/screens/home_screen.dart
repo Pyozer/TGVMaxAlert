@@ -94,23 +94,23 @@ class _HomeScreenState extends State<HomeScreen> {
     Alert duplicate = Alert.fromRawJson(alert.toRawJson());
     duplicate.uuid = Uuid().v4();
 
-    setState(() {
-      _alerts.add(AlertFetched(alert: duplicate));
-      Preferences.instance.addAlert(duplicate);
-    });
+    _alerts.add(AlertFetched(alert: duplicate));
+    Preferences.instance.addAlert(duplicate);
+    setState(() {});
     _fetchAllAlerts();
   }
 
   void _deleteAlert(Alert alert) {
-    setState(() {
-      _alerts.removeWhere((a) => a.alert.uuid == alert.uuid);
-      Preferences.instance.setAlerts(_alerts.map((a) => a.alert).toList());
-    });
+    _alerts.removeWhere((a) => a.alert.uuid == alert.uuid);
+    Preferences.instance.setAlerts(_alerts.map((a) => a.alert).toList());
+    setState(() {});
   }
 
   Future<void> _fetchAllAlerts() async {
-    final alerts = await Api.getAllAlerts();
-    setState(() => _alerts = alerts);
+    List<AlertFetched> alerts = await Api.getAllAlerts();
+    _alerts.clear();
+    _alerts.addAll(alerts);
+    setState(() {});
   }
 
   @override

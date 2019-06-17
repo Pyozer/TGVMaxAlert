@@ -21,6 +21,7 @@ class AlertRow extends StatelessWidget {
   }) : super(key: key);
 
   Future<bool> _showDeleteSnack(BuildContext context) async {
+    Scaffold.of(context).removeCurrentSnackBar();
     final reason = await Scaffold.of(context)
         .showSnackBar(
           SnackBar(
@@ -59,7 +60,9 @@ class AlertRow extends StatelessWidget {
       key: Key(alertFetched.alert.uuid),
       direction: DismissDirection.endToStart,
       confirmDismiss: (_) async {
-        return _showDeleteSnack(context);
+        bool isDeleted = await _showDeleteSnack(context);
+        if (isDeleted) onDelete(alertFetched.alert);
+        return isDeleted;
       },
       background: Container(
         color: Colors.red,
