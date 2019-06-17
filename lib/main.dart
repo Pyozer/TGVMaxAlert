@@ -7,10 +7,10 @@ import 'package:tgv_max_alert/utils/background_handler.dart';
 import 'package:tgv_max_alert/utils/preferences.dart';
 import 'package:background_fetch/background_fetch.dart';
 
-FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+FlutterLocalNotificationsPlugin flutterLocalNotif;
 
 void main() async {
-  flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  flutterLocalNotif = FlutterLocalNotificationsPlugin();
 
   initializeDateFormatting("fr_FR");
 
@@ -20,5 +20,10 @@ void main() async {
 
   // Register to receive BackgroundFetch events after app is terminated.
   // Requires {stopOnTerminate: false, enableHeadless: true}
-  BackgroundFetch.registerHeadlessTask(handleBackgroundFetch);
+  BackgroundFetch.registerHeadlessTask(headlessTask);
+}
+
+Future<void> headlessTask() async {
+  print("Wesh");
+  await handleBackgroundFetch();
 }

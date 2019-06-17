@@ -1,9 +1,6 @@
 import 'package:background_fetch/background_fetch.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:tgv_max_alert/main.dart';
-import 'package:tgv_max_alert/screens/add_alert_screen.dart';
 import 'package:tgv_max_alert/screens/home_screen.dart';
 import 'package:tgv_max_alert/utils/background_handler.dart';
 
@@ -18,14 +15,7 @@ class _AppState extends State<App> {
   @override
   void initState() {
     super.initState();
-    final initAndroid = AndroidInitializationSettings('ic_notif_train');
-    final initIOS = IOSInitializationSettings(
-      onDidReceiveLocalNotification: onDidReceiveLocalNotification,
-    );
-    flutterLocalNotificationsPlugin.initialize(
-      InitializationSettings(initAndroid, initIOS),
-      onSelectNotification: onSelectNotification,
-    );
+
     initPlatformState();
   }
 
@@ -37,6 +27,7 @@ class _AppState extends State<App> {
         minimumFetchInterval: 15,
         stopOnTerminate: false,
         enableHeadless: true,
+        startOnBoot: true,
       ),
       handleBackgroundFetch,
     ).then((int status) {
@@ -49,52 +40,6 @@ class _AppState extends State<App> {
     // message was in flight, we want to discard the reply rather than calling
     // setState to update our non-existent appearance.
     if (!mounted) return;
-
-    while (DateTime.now().minute < 14) {
-      await Future.delayed(Duration(seconds: 10));
-      BackgroundFetch.start();
-    }
-  }
-
-  Future<void> onDidReceiveLocalNotification(
-    int id,
-    String title,
-    String body,
-    String payload,
-  ) async {
-    // display a dialog with the notification details, tap ok to go to another page
-    await showDialog(
-      context: context,
-      builder: (BuildContext context) => CupertinoAlertDialog(
-            title: Text(title),
-            content: Text(body),
-            actions: [
-              CupertinoDialogAction(
-                isDefaultAction: true,
-                child: Text('Ok'),
-                onPressed: () async {
-                  Navigator.of(context, rootNavigator: true).pop();
-                  await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => AddAlertScreen(),
-                    ),
-                  );
-                },
-              )
-            ],
-          ),
-    );
-  }
-
-  Future<void> onSelectNotification(String payload) async {
-    if (payload != null) {
-      debugPrint('notification payload: ' + payload);
-    }
-
-    await Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => AddAlertScreen()),
-    );
   }
 
   @override

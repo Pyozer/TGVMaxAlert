@@ -1,5 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:tgv_max_alert/main.dart';
 import 'package:tgv_max_alert/models/alert.dart';
 import 'package:tgv_max_alert/models/alert_fetched.dart';
 import 'package:tgv_max_alert/screens/add_alert_screen.dart';
@@ -21,11 +24,64 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    final initAndroid = AndroidInitializationSettings('ic_notif_train');
+    final initIOS = IOSInitializationSettings(
+      onDidReceiveLocalNotification: onDidReceiveLocalNotification,
+    );
+    flutterLocalNotif.initialize(
+      InitializationSettings(initAndroid, initIOS),
+      onSelectNotification: onSelectNotification,
+    );
+
     _alerts = Preferences.instance
         .getAlerts()
         .map((a) => AlertFetched(alert: a))
         .toList();
     _fetchAllAlerts();
+  }
+
+  Future<void> onDidReceiveLocalNotification(
+    int id,
+    String title,
+    String body,
+    String payload,
+  ) async {
+    // display a dialog with the notification details, tap ok to go to another page
+    await showDialog(
+      context: context,
+      builder: (_) => CupertinoAlertDialog(
+            title: Text(title),
+            content: Text(body),
+            actions: [
+              CupertinoDialogAction(
+                isDefaultAction: true,
+                child: Text('Ok'),
+                onPressed: () => onSelectNotification(payload),
+              ),
+            ],
+          ),
+    );
+  }
+
+  Future<void> onSelectNotification(String payload) async {
+    if (payload == null) return;
+
+    try {
+      Alert notifAlert = Alert.fromRawJson(payload);
+      Alert alert = Preferences.instance
+          .getAlerts()
+          .firstWhere((a) => a.uuid == notifAlert.uuid, orElse: () => null);
+
+      if (alert == null) return;
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(
+          builder: (_) => AlertTrainsScreen(data: AlertFetched(alert: alert)),
+        ),
+        (Route<dynamic> route) => route.isFirst,
+      );
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 
   void _onAlertTap(AlertFetched alert) {

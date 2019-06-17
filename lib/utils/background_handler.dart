@@ -7,25 +7,27 @@ import 'package:tgv_max_alert/utils/utils.dart';
 
 Future<void> _showNotification(Alert alert) async {
   var androidPlatform = AndroidNotificationDetails(
-    'your channel id',
-    'your channel name',
-    'your channel description',
+    "tgvmaxalerts",
+    "Alertes TGVMax",
+    "Notification lorsqu'une place TGVMax est disponible",
     importance: Importance.High,
     priority: Priority.High,
     ticker: 'ticker',
+    style: AndroidNotificationStyle.BigText,
   );
   var iOSPlatform = IOSNotificationDetails();
   var platformChannel = NotificationDetails(androidPlatform, iOSPlatform);
-  await flutterLocalNotificationsPlugin.show(
-    int.parse(DateTime.now().microsecondsSinceEpoch.toString().substring(-6)),
+  final microSeconds = DateTime.now().microsecondsSinceEpoch.toString();
+  await flutterLocalNotif.show(
+    int.parse(microSeconds.substring(microSeconds.length - 5)),
     'Place TGVMax disponible !',
-    'Trajet ${alert.origin} - ${alert.destination}, le ${formatMediumDate(alert.departureDate)}',
+    'Trajet ${alert.origin} - ${alert.destination}, pour le ${capitalize(formatMediumDate(alert.departureDate))}.',
     platformChannel,
     payload: alert.toRawJson(),
   );
 }
 
-Future<int> handleBackgroundFetch() async {
+Future<void> handleBackgroundFetch() async {
   print('[BackgroundFetch] Event received');
   final alertsFetched = await Api.getAllAlerts();
   bool isTgvMax = false;
@@ -37,7 +39,9 @@ Future<int> handleBackgroundFetch() async {
     }
   }
 
-  return isTgvMax
-      ? BackgroundFetch.FETCH_RESULT_NEW_DATA
-      : BackgroundFetch.FETCH_RESULT_NO_DATA;
+  BackgroundFetch.finish(
+    isTgvMax
+        ? BackgroundFetch.FETCH_RESULT_NEW_DATA
+        : BackgroundFetch.FETCH_RESULT_NO_DATA,
+  );
 }
