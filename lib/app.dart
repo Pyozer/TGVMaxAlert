@@ -28,6 +28,7 @@ class _AppState extends State<App> {
         stopOnTerminate: false,
         enableHeadless: true,
         startOnBoot: true,
+        forceReload: true,
       ),
       handleBackgroundFetch,
     ).then((int status) {

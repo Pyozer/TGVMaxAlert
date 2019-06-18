@@ -52,8 +52,7 @@ class _AddAlertScreenState extends State<AddAlertScreen> {
       destination: _arrival.label,
       destinationCode: _arrival.id,
     );
-    Preferences.instance.addAlert(newAlert);
-    Navigator.of(context).pop();
+    Navigator.of(context).pop(newAlert);
   }
 
   @override

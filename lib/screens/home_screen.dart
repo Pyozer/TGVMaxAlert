@@ -33,11 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
       onSelectNotification: onSelectNotification,
     );
 
-    _alerts = Preferences.instance
-        .getAlerts()
-        .map((a) => AlertFetched(alert: a))
-        .toList();
-    _fetchAllAlerts();
+    _initAlerts();
   }
 
   Future<void> onDidReceiveLocalNotification(
@@ -82,6 +78,14 @@ class _HomeScreenState extends State<HomeScreen> {
     } catch (e) {
       debugPrint(e.toString());
     }
+  }
+
+  void _initAlerts() {
+    _alerts = Preferences.instance
+        .getAlerts()
+        .map((a) => AlertFetched(alert: a))
+        .toList();
+    _fetchAllAlerts();
   }
 
   void _onAlertTap(AlertFetched alert) {
@@ -167,10 +171,13 @@ class _HomeScreenState extends State<HomeScreen> {
         floatingActionButton: FloatingActionButton.extended(
           label: const Text("Ajouter"),
           icon: const Icon(Icons.add),
-          onPressed: () {
-            Navigator.of(context).push(
+          onPressed: () async {
+            Alert alert = await Navigator.of(context).push<Alert>(
               MaterialPageRoute(builder: (_) => AddAlertScreen()),
             );
+            if (alert == null) return;
+            Preferences.instance.addAlert(alert);
+            _initAlerts();
           },
         ),
       ),
