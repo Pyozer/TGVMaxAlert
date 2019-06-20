@@ -13,18 +13,14 @@ class Api {
     final httpRes = await Dio().post(
       API_URL,
       data: Payload(
-        //origin: "PARIS (intramuros)",
-        //originCode: "FRPMO",
         origin: alert.origin,
         originCode: alert.originCode,
-        //destination: "LE MANS",
-        //destinationCode: "FRAET",
         destination: alert.destination,
         destinationCode: alert.destinationCode,
         departureDate: alert.departureDate,
         passengers: [
           Passenger(
-            birthDate: DateTime(1998, 05, 13),
+            birthDate: DateTime(1998, 5, 13),
             commercialCardNumber: "HC600394293",
           ),
         ],

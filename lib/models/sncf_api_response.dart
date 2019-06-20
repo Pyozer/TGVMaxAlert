@@ -286,8 +286,9 @@ class Segment {
 
 class ValidationError {
   String label;
+  String errorCode;
 
-  ValidationError({this.label});
+  ValidationError({this.label, this.errorCode});
 
   factory ValidationError.fromRawJson(String str) =>
       ValidationError.fromJson(json.decode(str));
@@ -295,7 +296,10 @@ class ValidationError {
   String toRawJson() => json.encode(toJson());
 
   factory ValidationError.fromJson(Map<String, dynamic> json) =>
-      ValidationError(label: json["label"]);
+      ValidationError(
+        label: json["label"],
+        errorCode: json["errorCode"],
+      );
 
-  Map<String, dynamic> toJson() => {"label": label};
+  Map<String, dynamic> toJson() => {"label": label, "errorCode": errorCode};
 }

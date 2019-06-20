@@ -14,6 +14,8 @@ class Preferences {
 
   List<Alert> getAlerts() {
     _alerts?.sort((a, b) => a.departureDate.compareTo(b.departureDate));
+    _alerts?.removeWhere((a) => a.departureDate.isBefore(DateTime.now()));
+    setAlerts(_alerts);
     return _alerts ?? [];
   }
 

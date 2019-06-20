@@ -68,11 +68,14 @@ class Passenger {
     this.commercialCardType = "HAPPY_CARD",
   });
 
+  int get age => DateTime.now().difference(birthDate).inDays ~/ 365;
+
   String toRawJson() => json.encode(toJson());
 
   Map<String, dynamic> toJson() => {
         "profile": profile,
         "birthDate": birthDate.toIso8601String().split('.')[0],
+        "age": age,
         "commercialCardNumber": commercialCardNumber,
         "commercialCardType": commercialCardType,
       };

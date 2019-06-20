@@ -19,6 +19,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   List<AlertFetched> _alerts = [];
 
   @override
@@ -88,6 +89,13 @@ class _HomeScreenState extends State<HomeScreen> {
     _fetchAllAlerts();
   }
 
+  Future<void> _fetchAllAlerts() async {
+    List<AlertFetched> alerts = await Api.getAllAlerts();
+    _alerts.clear();
+    _alerts.addAll(alerts);
+    setState(() {});
+  }
+
   void _onAlertTap(AlertFetched alert) {
     Navigator.of(context).push(MaterialPageRoute(
       builder: (_) => AlertTrainsScreen(data: alert),
@@ -110,13 +118,6 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {});
   }
 
-  Future<void> _fetchAllAlerts() async {
-    List<AlertFetched> alerts = await Api.getAllAlerts();
-    _alerts.clear();
-    _alerts.addAll(alerts);
-    setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion(
@@ -124,6 +125,7 @@ class _HomeScreenState extends State<HomeScreen> {
         statusBarColor: Colors.transparent,
       ),
       child: Scaffold(
+        key: _scaffoldKey,
         body: SafeArea(
           bottom: false,
           child: Column(
@@ -150,19 +152,22 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               Expanded(
-                child: ListView.separated(
-                  physics: const BouncingScrollPhysics(),
-                  padding: const EdgeInsets.only(bottom: 75),
-                  itemCount: _alerts.length,
-                  itemBuilder: (_, index) {
-                    return AlertRow(
-                      alertFetched: _alerts[index],
-                      onLongPress: _duplicateAlert,
-                      onDelete: _deleteAlert,
-                      onTap: () => _onAlertTap(_alerts[index]),
-                    );
-                  },
-                  separatorBuilder: (_, __) => const Divider(height: 0),
+                child: RefreshIndicator(
+                  onRefresh: _fetchAllAlerts,
+                  child: ListView.separated(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    padding: const EdgeInsets.only(bottom: 75),
+                    itemCount: _alerts.length,
+                    itemBuilder: (_, index) {
+                      return AlertRow(
+                        alertFetched: _alerts[index],
+                        onLongPress: _duplicateAlert,
+                        onDelete: _deleteAlert,
+                        onTap: _onAlertTap,
+                      );
+                    },
+                    separatorBuilder: (_, __) => const Divider(height: 0),
+                  ),
                 ),
               ),
             ],

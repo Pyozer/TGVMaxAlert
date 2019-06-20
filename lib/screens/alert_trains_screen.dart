@@ -13,10 +13,32 @@ class AlertTrainsScreen extends StatelessWidget {
   final AlertFetched data;
   final _refreshKey = GlobalKey<RefreshIndicatorState>();
 
-  Future<SncfApiResponse> _fetchData() async {
-    _refreshKey?.currentState?.show();
-    data.sncfResponse = await Api.getTrainsData(data.alert);
-    return data.sncfResponse;
+  Widget _buildErrorText(BuildContext context, String text) {
+    return Padding(
+      padding: const EdgeInsets.all(24.0),
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              text,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.title,
+            ),
+            const SizedBox(height: 16.0),
+            RaisedButton(
+              child: Text("Réessayer"),
+              onPressed: _refreshKey?.currentState?.show,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              color: Theme.of(context).primaryColor,
+              textColor: Colors.white,
+            )
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -95,16 +117,24 @@ class AlertTrainsScreen extends StatelessWidget {
                 key: _refreshKey,
                 onRefresh: () => Api.getTrainsData(data.alert),
                 child: FutureBuilder<SncfApiResponse>(
-                    future: _fetchData(),
+                    future: Api.getTrainsData(data.alert),
                     initialData: data.sncfResponse,
                     builder: (context, snap) {
                       if (!snap.hasData &&
                           snap.connectionState == ConnectionState.waiting)
                         return const Center(child: CircularProgressIndicator());
-                      if (snap.hasError) return Text(snap.error.toString());
+                      if (snap.hasError)
+                        return _buildErrorText(context, snap.error.toString());
 
-                      if (snap.data.status == "NO_RESULTS")
-                        return Center(child: Text("No result :/"));
+                      if (snap.data.validationErrors?.isNotEmpty ?? false)
+                        return _buildErrorText(
+                          context,
+                          snap.data.validationErrors[0].label,
+                        );
+
+                      if (snap.data.status == "NO_RESULTS" ||
+                          snap.data.trainProposals.isEmpty)
+                        return _buildErrorText(context, "No result :/");
 
                       return ListView.separated(
                         itemCount: snap.data.trainProposals.length,
