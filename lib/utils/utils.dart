@@ -21,4 +21,9 @@ String formatTimeHm(TimeOfDay time) {
 }
 
 String formatDate(DateTime date) => DateFormat.MMMEd('fr_FR').format(date);
-String formatMediumDate(DateTime date) => DateFormat.MMMMEEEEd('fr_FR').format(date);
+String formatMediumDate(DateTime date) =>
+    DateFormat.MMMMEEEEd('fr_FR').format(date);
+
+DateTime mergeDateAndTime(DateTime date, TimeOfDay time) {
+  return DateTime(date.year, date.month, date.day, time.hour, time.minute);
+}

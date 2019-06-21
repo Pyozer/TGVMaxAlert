@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:tgv_max_alert/models/alert_fetched.dart';
+import 'package:tgv_max_alert/models/alert/alert_fetched.dart';
 import 'package:tgv_max_alert/models/sncf_api_response.dart';
 import 'package:tgv_max_alert/utils/api/api.dart';
 import 'package:tgv_max_alert/utils/utils.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:tgv_max_alert/models/alert.dart';
-import 'package:tgv_max_alert/models/alert_fetched.dart';
+import 'package:tgv_max_alert/models/alert/alert.dart';
+import 'package:tgv_max_alert/models/alert/alert_fetched.dart';
 import 'package:tgv_max_alert/utils/utils.dart';
 
 typedef void OnEvent(Alert alert);

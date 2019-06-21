@@ -1,5 +1,5 @@
 import 'package:meta/meta.dart';
-import 'package:tgv_max_alert/models/alert.dart';
+import 'package:tgv_max_alert/models/alert/alert.dart';
 import 'package:tgv_max_alert/models/sncf_api_response.dart';
 
 class AlertFetched {

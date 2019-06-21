@@ -1,9 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:tgv_max_alert/models/alert.dart';
+import 'package:tgv_max_alert/models/alert/alert.dart';
 import 'package:tgv_max_alert/models/sncf_gare.dart';
 import 'package:tgv_max_alert/utils/api/api.dart';
-import 'package:tgv_max_alert/utils/preferences.dart';
 import 'package:tgv_max_alert/utils/utils.dart';
 import 'package:tgv_max_alert/widgets/station_autocomplete.dart';
 import 'package:uuid/uuid.dart';
@@ -46,7 +45,7 @@ class _AddAlertScreenState extends State<AddAlertScreen> {
     // Return the alert on navigation pop
     final newAlert = Alert(
       uuid: Uuid().v4(),
-      departureDate: DateTime(_date.year, _date.month, _date.day, _hour.hour, _hour.minute),
+      departureDate: mergeDateAndTime(_date, _hour),
       origin: _departure.label,
       originCode: _departure.id,
       destination: _arrival.label,

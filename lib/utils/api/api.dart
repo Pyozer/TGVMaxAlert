@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:tgv_max_alert/models/alert.dart';
-import 'package:tgv_max_alert/models/alert_fetched.dart';
+import 'package:tgv_max_alert/models/alert/alert.dart';
+import 'package:tgv_max_alert/models/alert/alert_fetched.dart';
 import 'package:tgv_max_alert/models/payload/payload.dart';
 import 'package:tgv_max_alert/models/sncf_api_response.dart';
 import 'package:tgv_max_alert/models/sncf_gare.dart';
@@ -54,7 +54,7 @@ class Api {
   }
 
   static Future<List<AlertFetched>> getAllAlerts() async {
-    final alerts = Preferences.instance.getAlerts();
+    final alerts = Preferences.instance.alerts;
 
     return await Future.wait<AlertFetched>(
       alerts.map<Future<AlertFetched>>((a) async {

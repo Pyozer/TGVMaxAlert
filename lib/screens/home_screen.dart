@@ -3,14 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:tgv_max_alert/main.dart';
-import 'package:tgv_max_alert/models/alert.dart';
-import 'package:tgv_max_alert/models/alert_fetched.dart';
+import 'package:tgv_max_alert/models/alert/alert.dart';
+import 'package:tgv_max_alert/models/alert/alert_fetched.dart';
 import 'package:tgv_max_alert/screens/add_alert_screen.dart';
 import 'package:tgv_max_alert/screens/alert_trains_screen.dart';
 import 'package:tgv_max_alert/utils/api/api.dart';
 import 'package:tgv_max_alert/utils/preferences.dart';
 import 'package:tgv_max_alert/widgets/alert_row.dart';
-import 'package:uuid/uuid.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key key}) : super(key: key);
@@ -65,9 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     try {
       Alert notifAlert = Alert.fromRawJson(payload);
-      Alert alert = Preferences.instance
-          .getAlerts()
-          .firstWhere((a) => a.uuid == notifAlert.uuid, orElse: () => null);
+      Alert alert = Preferences.instance.searchAlertById(notifAlert.uuid);
 
       if (alert == null) return;
       Navigator.of(context).pushAndRemoveUntil(
@@ -82,9 +79,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _initAlerts() {
-    _alerts = Preferences.instance
-        .getAlerts()
-        .map((a) => AlertFetched(alert: a))
+    _alerts = Preferences.instance.alerts
+        .map((alert) => AlertFetched(alert: alert))
         .toList();
     _fetchAllAlerts();
   }
@@ -103,9 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _duplicateAlert(Alert alert) {
-    Alert duplicate = Alert.fromRawJson(alert.toRawJson());
-    duplicate.uuid = Uuid().v4();
-
+    Alert duplicate = alert.duplicate();
     _alerts.add(AlertFetched(alert: duplicate));
     Preferences.instance.addAlert(duplicate);
     setState(() {});
@@ -113,8 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _deleteAlert(Alert alert) {
-    _alerts.removeWhere((a) => a.alert.uuid == alert.uuid);
-    Preferences.instance.setAlerts(_alerts.map((a) => a.alert).toList());
+    Preferences.instance.removeAlert(alert);
     setState(() {});
   }
 

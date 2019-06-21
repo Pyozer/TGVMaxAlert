@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:meta/meta.dart';
+import 'package:uuid/uuid.dart';
 
 class Alert {
   String uuid;
@@ -40,4 +41,13 @@ class Alert {
         "destinationCode": destinationCode,
         "departureDate": departureDate.toIso8601String(),
       };
+
+  Alert duplicate() => Alert(
+        uuid: Uuid().v4(),
+        departureDate: departureDate,
+        destination: destination,
+        destinationCode: destinationCode,
+        origin: origin,
+        originCode: originCode,
+      );
 }

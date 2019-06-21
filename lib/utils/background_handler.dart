@@ -1,7 +1,7 @@
 import 'package:background_fetch/background_fetch.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:tgv_max_alert/main.dart';
-import 'package:tgv_max_alert/models/alert.dart';
+import 'package:tgv_max_alert/models/alert/alert.dart';
 import 'package:tgv_max_alert/utils/api/api.dart';
 import 'package:tgv_max_alert/utils/utils.dart';
 
