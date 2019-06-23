@@ -18,6 +18,10 @@ dependencies:
   uuid: ^2.0.1
   background_fetch: ^0.2.0
 
+dependency_overrides:
+  keyboard_visibility:
+    git: git://github.com/yoali11/flutter_keyboard_visibility.git
+
 #dev_dependencies:
 #  flutter_test:
 #    sdk: flutter

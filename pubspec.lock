@@ -84,11 +84,13 @@ packages:
     source: hosted
     version: "0.15.8"
   keyboard_visibility:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: keyboard_visibility
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: "3c416d1268c2ad8d95d15d5c64640230b6837151"
+      url: "git://github.com/yoali11/flutter_keyboard_visibility.git"
+    source: git
     version: "0.5.6"
   meta:
     dependency: transitive

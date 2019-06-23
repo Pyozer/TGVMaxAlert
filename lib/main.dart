@@ -12,7 +12,7 @@ FlutterLocalNotificationsPlugin flutterLocalNotif;
 void main() async {
   flutterLocalNotif = FlutterLocalNotificationsPlugin();
 
-  initializeDateFormatting("fr_FR");
+  await initializeDateFormatting("fr_FR");
 
   Preferences.sharedPreferences = await SharedPreferences.getInstance();
   Preferences.instance.initPrefs();
@@ -20,10 +20,5 @@ void main() async {
 
   // Register to receive BackgroundFetch events after app is terminated.
   // Requires {stopOnTerminate: false, enableHeadless: true}
-  BackgroundFetch.registerHeadlessTask(headlessTask);
-}
-
-Future<void> headlessTask() async {
-  print("Wesh");
-  await handleBackgroundFetch();
+  BackgroundFetch.registerHeadlessTask(handleBackgroundFetch);
 }

@@ -79,9 +79,12 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _initAlerts() {
-    _alerts = Preferences.instance.alerts
-        .map((alert) => AlertFetched(alert: alert))
-        .toList();
+    if (!mounted) return;
+    setState(() {
+      _alerts = Preferences.instance.alerts
+          .map((alert) => AlertFetched(alert: alert))
+          .toList();
+    });
     _fetchAllAlerts();
   }
 
@@ -89,6 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
     List<AlertFetched> alerts = await Api.getAllAlerts();
     _alerts.clear();
     _alerts.addAll(alerts);
+    if (!mounted) return;
     setState(() {});
   }
 
@@ -100,7 +104,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _duplicateAlert(Alert alert) {
     Alert duplicate = alert.duplicate();
-    _alerts.add(AlertFetched(alert: duplicate));
     Preferences.instance.addAlert(duplicate);
     setState(() {});
     _fetchAllAlerts();

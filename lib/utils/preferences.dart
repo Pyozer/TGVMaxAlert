@@ -24,11 +24,11 @@ class Preferences {
 
   void addAlert(Alert alert) {
     if (alert == null) return;
-    _alerts.add(alert);
+    alerts = _alerts..add(alert);
   }
 
   void removeAlert(Alert alert) {
-    _alerts.removeWhere((a) => a.uuid == alert.uuid);
+    alerts = _alerts..removeWhere((a) => a.uuid == alert.uuid);
   }
 
   Alert searchAlertById(String uuid) {
@@ -38,9 +38,13 @@ class Preferences {
   void _filterAlerts() {
     final now = DateTime.now();
     _alerts?.sort((a, b) => a.departureDate.compareTo(b.departureDate));
+    int oldLength = _alerts?.length ?? 0;
     _alerts?.removeWhere(
       (a) => a.departureDate.add(Duration(hours: 6)).isBefore(now),
     );
+    if (oldLength != (_alerts?.length ?? 0)) {
+      alerts = _alerts;
+    }
   }
 
   void initPrefs() {
