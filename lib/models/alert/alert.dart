@@ -12,7 +12,7 @@ class Alert {
   DateTime departureDate;
 
   Alert({
-    @required this.uuid,
+    this.uuid,
     @required this.origin,
     @required this.originCode,
     @required this.destination,

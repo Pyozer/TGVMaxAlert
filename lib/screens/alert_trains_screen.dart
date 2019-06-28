@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:tgv_max_alert/models/alert/alert.dart';
 import 'package:tgv_max_alert/models/alert/alert_fetched.dart';
 import 'package:tgv_max_alert/models/sncf_api_response.dart';
+import 'package:tgv_max_alert/screens/add_alert_screen.dart';
 import 'package:tgv_max_alert/utils/api/api.dart';
+import 'package:tgv_max_alert/utils/preferences.dart';
 import 'package:tgv_max_alert/utils/utils.dart';
 import 'package:tgv_max_alert/widgets/a_to_b_painter.dart';
 import 'package:tgv_max_alert/widgets/trains_details/train_proposal_row.dart';
@@ -61,6 +64,19 @@ class AlertTrainsScreen extends StatelessWidget {
         ),
         centerTitle: true,
         elevation: 0,
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon((Icons.edit)),
+            onPressed: () async {
+              final alertEdited = await Navigator.of(context).push<Alert>(MaterialPageRoute(
+                builder: (_) => AddAlertScreen(alert: data.alert),
+              ));
+              if (alertEdited == null) return;
+              Preferences.instance.removeAlert(data.alert);
+              Preferences.instance.addAlert(alertEdited);
+            },
+          ),
+        ],
       ),
       backgroundColor: Theme.of(context).primaryColor,
       body: Column(

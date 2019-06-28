@@ -8,7 +8,9 @@ import 'package:tgv_max_alert/widgets/station_autocomplete.dart';
 import 'package:uuid/uuid.dart';
 
 class AddAlertScreen extends StatefulWidget {
-  AddAlertScreen({Key key}) : super(key: key);
+  final Alert alert;
+  
+  AddAlertScreen({Key key, this.alert}) : super(key: key);
 
   _AddAlertScreenState createState() => _AddAlertScreenState();
 }
@@ -22,11 +24,30 @@ class _AddAlertScreenState extends State<AddAlertScreen> {
   DateTime _date = DateTime.now();
   TimeOfDay _hour = TimeOfDay.now();
 
+  @override
+  void initState() {
+    super.initState();
+    if (widget.alert != null) {
+      _departure = SncfStation(
+        id: widget.alert.originCode,
+        label: widget.alert.origin,
+      );
+      _departureController.text = _departure.label;
+      _arrival = SncfStation(
+        id: widget.alert.destinationCode,
+        label: widget.alert.destination,
+      );
+      _arrivalController.text = _arrival.label;
+      _date = widget.alert.departureDate;
+      _hour = TimeOfDay.fromDateTime(widget.alert.departureDate);
+    }
+  }
+
   void _openDatePicker() async {
     DateTime date = await showDatePicker(
       context: context,
       firstDate: _firstDate,
-      lastDate: _firstDate.add(Duration(days: 31 * 3)),
+      lastDate: _firstDate.add(Duration(days: 31 * 4)),
       initialDate: _date,
     );
     if (date != null) setState(() => _date = date);
@@ -43,14 +64,16 @@ class _AddAlertScreenState extends State<AddAlertScreen> {
   void _addAlert() {
     // TODO: Check fields and add alert to sharedpreferences
     // Return the alert on navigation pop
-    final newAlert = Alert(
-      uuid: Uuid().v4(),
+
+    Alert newAlert = Alert(
       departureDate: mergeDateAndTime(_date, _hour),
       origin: _departure.label,
       originCode: _departure.id,
       destination: _arrival.label,
       destinationCode: _arrival.id,
     );
+    newAlert.uuid = widget.alert?.uuid ?? Uuid().v4();
+
     Navigator.of(context).pop(newAlert);
   }
 
