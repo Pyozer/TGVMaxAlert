@@ -40,13 +40,26 @@ void handleBackgroundFetch() async {
   // Fetch all alerts
   final alertsFetched = await Api.getAllAlerts();
   bool isTgvMax = false;
+
+  List<String> currNotifiedAlerts = Preferences.instance.notifiedAlerts;
+
   for (final alertFetched in alertsFetched) {
-    if (alertFetched.sncfResponse.isAtLeastOneTgvMax()) {
+    final alertUuid = alertFetched.alert.uuid;
+    bool isSeat = alertFetched.sncfResponse.isAtLeastOneTgvMax();
+
+    bool isAlreadyNotified = currNotifiedAlerts.contains(alertUuid);
+    if (isAlreadyNotified && !isSeat) {
+      currNotifiedAlerts.remove(alertUuid);
+    } else if (!isAlreadyNotified && isSeat) {
+      currNotifiedAlerts.add(alertUuid);
+    }
+    if (isSeat && !isAlreadyNotified) {
       isTgvMax = true;
       await _showNotification(alertFetched.alert);
-      print("Notif sent");
     }
   }
+  // Update notified alerts
+  Preferences.instance.notifiedAlerts = currNotifiedAlerts;
 
   BackgroundFetch.finish(
     isTgvMax

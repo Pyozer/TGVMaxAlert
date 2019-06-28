@@ -11,7 +11,11 @@ class Preferences {
   Preferences._internal();
 
   List<Alert> _alerts = [];
+  List<String> _notifiedAlerts = [];
 
+  /**
+   * Handle TGVMAX alerts
+   */
   List<Alert> get alerts => _alerts ?? [];
 
   set alerts(List<Alert> alerts) {
@@ -47,10 +51,25 @@ class Preferences {
     }
   }
 
+  /**
+   * Handle notified alerts uuid
+   */
+  List<String> get notifiedAlerts => _notifiedAlerts ?? [];
+
+  set notifiedAlerts(List<String> notifiedALerts) {
+    _notifiedAlerts = notifiedALerts;
+    sharedPreferences.setStringList("notified_alerts", _notifiedAlerts);
+  }
+
+  /**
+   * Handle initialization of preferences
+   */
   void initPrefs() {
     _alerts = (sharedPreferences.getStringList("alerts") ?? <String>[])
         .map((v) => Alert.fromRawJson(v))
         .toList();
     _filterAlerts();
+
+    _notifiedAlerts = sharedPreferences.getStringList("notified_alerts") ?? <String>[];
   }
 }
