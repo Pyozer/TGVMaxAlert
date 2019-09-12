@@ -1,82 +1,115 @@
 {
-    "trainProposals": [
+    "wishId": "5d7a94be46c8660d40e178da",
+    "messages": [],
+    "travelProposals": [
         {
-            "departureDate": "2019-06-13T09:33:00",
-            "arrivalDate": "2019-06-13T10:35:00",
-            "minuteDuration": 62,
-            "priceProposals": [
-                {
-                    "id": "1",
-                    "amount": 60,
-                    "currency": "EUR",
-                    "type": "SEMIFLEX",
-                    "remainingSeat": 165,
-                    "flags": [
-                        "TGVMAX"
-                    ]
-                },
-                {
-                    "id": "2",
-                    "amount": 77,
-                    "currency": "EUR",
-                    "type": "UPSELL",
-                    "remainingSeat": 17,
-                    "flags": [
-                        "TGVMAX"
-                    ]
-                }
-            ],
+            "id": "12cc2d78-76c2-4a17-87bc-f88d5671ff3c",
             "segments": [
                 {
-                    "id": 1,
-                    "originStationCode": "FRAET",
-                    "departureDate": "2019-06-13T09:33:00",
-                    "destinationStationCode": "FRPMO",
-                    "arrivalDate": "2019-06-13T10:35:00",
-                    "minuteDuration": 62,
-                    "trainType": "TGA",
-                    "trainNumber": "8864",
-                    "onboardServices": [
-                        "HANDICAPE",
-                        "VOITURE_BAR",
-                        "BUSINESS_PREMIERE",
-                        "VELO_PAYANT"
-                    ],
-                    "seatmapAvailable": true,
+                    "@type": "TRAVEL",
+                    "id": "f9249c47-105c-41e4-9a6d-35fc2d9edf31",
+                    "departureDate": "2019-09-13T19:37:00",
+                    "arrivalDate": "2019-09-13T20:29:00",
+                    "origin": {
+                        "station": {
+                            "label": "MASSY TGV"
+                        }
+                    },
+                    "destination": {
+                        "station": {
+                            "label": "LE MANS"
+                        }
+                    },
+                    "type": "TRAVEL",
+                    "duration": 3120,
                     "transporter": "TGV",
-                    "functionnalId": "2019-06-13T09:33_FRAET_8864_2019-06-13T10:35_FRPMO"
+                    "distributor": "TGV",
+                    "services": [
+                        "WIFI",
+                        "HANDICAPE",
+                        "VOITURE_BAR"
+                    ],
+                    "highlightFeatures": [
+                        "WIFI",
+                        "VOITURE_BAR"
+                    ],
+                    "vehicleNumber": "5230",
+                    "vehicleType": "TRAIN",
+                    "incomplete": false,
+                    "actualDuration": 3120,
+                    "isFirst": true,
+                    "isLast": true,
+                    "hasPerturbations": false,
+                    "isTransit": false
                 }
             ],
-            "originStationCode": "FRAET",
-            "destinationStationCode": "FRPMO",
-            "transporters": [
-                "TGV"
-            ],
-            "id": "2019-06-13T09:33_FRAET_8864_2019-06-13T10:35_FRPMO"
+            "firstClassOffers": {
+                "minPrice": 81.0,
+                "offers": [
+                    {
+                        "id": "72bd2c93-511f-451f-9839-0a6f6440109e",
+                        "travelClass": "1ère",
+                        "amount": 81.0,
+                        "isDisabled": false
+                    }
+                ],
+                "hasMultipleOffers": false,
+                "isIncomplete": true
+            },
+            "secondClassOffers": {
+                "minPrice": 60.0,
+                "offers": [
+                    {
+                        "id": "e6f31d53-09a7-477e-8639-61d851a55b11",
+                        "travelClass": "2nde",
+                        "amount": 60.0,
+                        "isDisabled": false
+                    }
+                ],
+                "hasMultipleOffers": false,
+                "isIncomplete": false
+            },
+            "travelType": "NORMAL",
+            "origin": {
+                "station": {
+                    "label": "MASSY TGV"
+                },
+                "city": {
+                    "label": "MASSY"
+                }
+            },
+            "destination": {
+                "station": {
+                    "label": "LE MANS"
+                },
+                "city": {
+                    "label": "LE MANS"
+                }
+            },
+            "departureDate": "2019-09-13T19:37:00",
+            "arrivalDate": "2019-09-13T20:29:00",
+            "minPrice": 60.0,
+            "duration": 3120,
+            "isIncomplete": false,
+            "isHighlight": false
         }
     ],
     "status": "SUCCESS",
-    "validationErrors": [
-        {
-            "label": "Merci de renseigner le numéro d'abonné TGVmax et une date de naissance au format JJ/MM/AAAA"
-        }
-    ],
     "itineraryDetails": {
         "origin": {
-            "cityCode": "FRLME",
-            "cityLabel": "LE MANS",
-            "stationCode": "FRAET",
-            "stationLabel": "LE MANS",
-            "zipCode": "72181"
+            "cityLabelFr": "MASSY",
+            "stationCode": "FRDJU",
+            "stationLabelFr": "MASSY TGV",
+            "zipCode": "91377",
+            "outsideFrance": false
         },
         "destination": {
-            "cityCode": "FRPAR",
-            "cityLabel": "PARIS",
-            "stationCode": "FRPMO",
-            "stationLabel": "PARIS MONTPARNASSE 1 ET 2",
-            "zipCode": "75056"
-        }
-    },
-    "containsFirstTrainOfDay": false,
-    "containsLastTrainOfDay": false
+            "cityLabelFr": "LE MANS",
+            "stationCode": "FRAET",
+            "stationLabelFr": "LE MANS",
+            "zipCode": "72181",
+            "outsideFrance": false
+        },
+        "international": false
+    }
 }

@@ -1,38 +1,32 @@
 import 'package:dio/dio.dart';
 import 'package:tgv_max_alert/models/alert/alert.dart';
 import 'package:tgv_max_alert/models/alert/alert_fetched.dart';
-import 'package:tgv_max_alert/models/payload/payload.dart';
-import 'package:tgv_max_alert/models/sncf_api_response.dart';
+import 'package:tgv_max_alert/models/payload/sncf_api_payload.dart';
+import 'package:tgv_max_alert/models/sncf/sncf_response.dart';
 import 'package:tgv_max_alert/models/sncf_gare.dart';
 import 'package:tgv_max_alert/utils/preferences.dart';
 
-const API_URL = "https://www.oui.sncf/proposition/rest/search-travels/outward";
+const API_URL = "https://www.oui.sncf/proposition/rest/travels/outward/train/next";
 
 class Api {
-  static Future<SncfApiResponse> getTrainsData(Alert alert) async {
+  static Future<SncfResponse> getTrainsData(Alert alert) async {
     final httpRes = await Dio().post(
       API_URL,
-      data: Payload(
-        origin: alert.origin,
+      data: SncfApiPayload(
         originCode: alert.originCode,
-        destination: alert.destination,
         destinationCode: alert.destinationCode,
         departureDate: alert.departureDate,
-        passengers: [
-          Passenger(
-            birthDate: DateTime(1998, 5, 13),
-            commercialCardNumber: "HC600394293",
-          ),
-        ],
+        dateOfBirth: DateTime(1998, 5, 13),
+        tgvMaxNumber: "HC600394293",
       ).toJson(),
     );
 
-    return SncfApiResponse.fromJson(httpRes.data);
+    return SncfResponse.fromJson(httpRes.data);
   }
 
   static Future<List<SncfStation>> getStations(String q, bool isOrigin) async {
     final httpRes = await Dio().get(
-      'https://booking.oui.sncf/booking/autocomplete-d2d',
+      'https://www.oui.sncf/booking/autocomplete-d2d',
       queryParameters: {
         'uc': 'fr-FR',
         'searchField': isOrigin ? 'origin' : 'destination',

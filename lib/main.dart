@@ -10,6 +10,8 @@ import 'package:background_fetch/background_fetch.dart';
 FlutterLocalNotificationsPlugin flutterLocalNotif;
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   flutterLocalNotif = FlutterLocalNotificationsPlugin();
 
   await initializeDateFormatting("fr_FR");

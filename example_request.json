@@ -1,23 +1,34 @@
 {
-    "origin": "LE MANS",
-    "originCode": "FRAET",
-    "destination": "PARIS (intramuros)",
-    "destinationCode": "FRPMO",
-    "directTravel": false,
-    "asymmetrical": false,
-    "professional": false,
-    "customerAccount": true,
-    "oneWayTravel": true,
-    "departureDate": "2019-06-13T10:00:00",
-    "travelClass": "SECOND",
-    "passengers": [
-        {
-            "profile": "YOUNG",
-            "birthDate": "1998-05-13T00:00:00",
-            "commercialCardNumber": "HC600394293",
-            "commercialCardType": "HAPPY_CARD"
+    "context": {
+        "paginationContext": {
+            "travelSchedule": {
+                "departureDate": "2019-09-13T20:00:00"
+            }
         }
-    ],
-    "outwardScheduleType": "BY_DEPARTURE_DATE",
-    "inwardScheduleType": "BY_DEPARTURE_DATE"
+    },
+    "wish": {
+        "mainJourney": {
+            "origin": {
+                "code": "FRDJU"
+            },
+            "destination": {
+                "code": "FRAET"
+            }
+        },
+        "schedule": {
+            "outward": "2019-09-13T20:00:00"
+        },
+        "travelClass": "SECOND",
+        "passengers": [
+            {
+                "typology": "YOUNG",
+                "discountCard": {
+                    "code": "HAPPY_CARD",
+                    "number": "HC600394293",
+                    "dateOfBirth": "1998-05-13"
+                }
+            }
+        ],
+        "salesMarket": "fr-FR"
+    }
 }

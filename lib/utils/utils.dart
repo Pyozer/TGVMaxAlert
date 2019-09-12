@@ -21,6 +21,7 @@ String formatTimeHm(TimeOfDay time) {
 }
 
 String formatDate(DateTime date) => DateFormat.MMMEd('fr_FR').format(date);
+String formatDOBDate(DateTime date) => DateFormat('yyyy-MM-dd').format(date);
 String formatMediumDate(DateTime date) =>
     DateFormat.MMMMEEEEd('fr_FR').format(date);
 

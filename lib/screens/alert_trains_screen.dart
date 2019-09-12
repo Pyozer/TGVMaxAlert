@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:tgv_max_alert/models/alert/alert.dart';
 import 'package:tgv_max_alert/models/alert/alert_fetched.dart';
-import 'package:tgv_max_alert/models/sncf_api_response.dart';
+import 'package:tgv_max_alert/models/sncf/sncf_response.dart';
 import 'package:tgv_max_alert/screens/add_alert_screen.dart';
 import 'package:tgv_max_alert/utils/api/api.dart';
 import 'package:tgv_max_alert/utils/preferences.dart';
@@ -132,7 +132,7 @@ class AlertTrainsScreen extends StatelessWidget {
               child: RefreshIndicator(
                 key: _refreshKey,
                 onRefresh: () => Api.getTrainsData(data.alert),
-                child: FutureBuilder<SncfApiResponse>(
+                child: FutureBuilder<SncfResponse>(
                     future: Api.getTrainsData(data.alert),
                     initialData: data.sncfResponse,
                     builder: (context, snap) {
@@ -142,22 +142,22 @@ class AlertTrainsScreen extends StatelessWidget {
                       if (snap.hasError)
                         return _buildErrorText(context, snap.error.toString());
 
-                      if (snap.data.validationErrors?.isNotEmpty ?? false)
+                      if (snap.data.messages?.isNotEmpty ?? false)
                         return _buildErrorText(
                           context,
-                          snap.data.validationErrors[0].label,
+                          snap.data.messages[0].body,
                         );
 
                       if (snap.data.status == "NO_RESULTS" ||
-                          snap.data.trainProposals.isEmpty)
+                          snap.data.travelProposals.isEmpty)
                         return _buildErrorText(context, "No result :/");
 
                       return ListView.separated(
-                        itemCount: snap.data.trainProposals.length,
+                        itemCount: snap.data.travelProposals.length,
                         separatorBuilder: (_, __) => const Divider(height: 0),
                         itemBuilder: (_, index) {
                           return TrainProposalRow(
-                            trainProposal: snap.data.trainProposals[index],
+                            trainProposal: snap.data.travelProposals[index],
                             itineraryDetails: snap.data.itineraryDetails,
                           );
                         },

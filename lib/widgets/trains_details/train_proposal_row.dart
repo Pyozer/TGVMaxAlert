@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-import 'package:tgv_max_alert/models/sncf_api_response.dart';
+import 'package:tgv_max_alert/models/sncf/itinary_details.dart';
+import 'package:tgv_max_alert/models/sncf/travel_proposal.dart';
 import 'package:tgv_max_alert/utils/utils.dart';
 
 class TrainProposalRow extends StatelessWidget {
-  final TrainProposal trainProposal;
+  final TravelProposal trainProposal;
   final ItineraryDetails itineraryDetails;
 
   const TrainProposalRow({
@@ -15,12 +16,6 @@ class TrainProposalRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Get lower price
-    trainProposal.priceProposals.sort((a, b) => a.amount.compareTo(b.amount));
-    final price = trainProposal.priceProposals.length > 0
-        ? trainProposal.priceProposals[0]
-        : null;
-
     final textTheme = Theme.of(context).textTheme;
     final baseTitleStyle = textTheme.title.copyWith(
       fontWeight: FontWeight.w700,
@@ -42,22 +37,17 @@ class TrainProposalRow extends StatelessWidget {
         height: 40.0,
         color: isTgvMax ? Colors.green : Colors.red,
       ),
-      trailing: price != null
-          ? Wrap(
-              direction: Axis.vertical,
-              crossAxisAlignment: WrapCrossAlignment.end,
-              spacing: 5.0,
-              children: [
-                Text(
-                  "${formatPrice(price.amount)}€",
-                  style: isTgvMax
-                      ? priceStyle.copyWith(color: Colors.green)
-                      : priceStyle,
-                ),
-                Text("${price.remainingSeat} places", style: textTheme.caption),
-              ],
+      trailing: trainProposal.isOffers()
+          ? Text(
+              "${formatPrice(trainProposal.minPrice)}€",
+              style: isTgvMax
+                  ? baseTitleStyle.copyWith(color: Colors.green)
+                  : baseTitleStyle,
             )
-          : Text("Complet", style: priceStyle),
+          : Text(
+              trainProposal.unsellableReason?.label ?? "",
+              style: priceStyle,
+            ),
     );
   }
 }

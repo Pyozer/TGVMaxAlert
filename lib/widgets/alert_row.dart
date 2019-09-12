@@ -45,7 +45,7 @@ class AlertRow extends StatelessWidget {
 
   Widget _buildIcon() {
     final isTgvMax = alertFetched.sncfResponse?.isAtLeastOneTgvMax();
-    final errors = alertFetched.sncfResponse?.validationErrors ?? [];
+    final errors = alertFetched.sncfResponse?.messages ?? [];
 
     if (isTgvMax == null) {
       return const SizedBox(
