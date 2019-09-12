@@ -9,7 +9,7 @@ import 'package:uuid/uuid.dart';
 
 class AddAlertScreen extends StatefulWidget {
   final Alert alert;
-  
+
   AddAlertScreen({Key key, this.alert}) : super(key: key);
 
   _AddAlertScreenState createState() => _AddAlertScreenState();
@@ -86,24 +86,27 @@ class _AddAlertScreenState extends State<AddAlertScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Add alert"),
+        title: widget.alert == null
+            ? const Text("Add alert")
+            : const Text('Edit alert'),
         centerTitle: true,
         elevation: 0,
       ),
       floatingActionButton: FloatingActionButton.extended(
-        icon: const Icon(Icons.add),
-        label: Text("Ajouter"),
+        icon: widget.alert == null
+            ? const Icon(Icons.add)
+            : const Icon(Icons.edit),
+        label: widget.alert == null
+            ? const Text("Ajouter")
+            : const Text("Modifier"),
         onPressed: _addAlert,
       ),
       body: Stack(
         children: [
-          Container(
-            color: Theme.of(context).primaryColor,
-            height: 55.0,
-          ),
+          Container(color: Theme.of(context).primaryColor, height: 55.0),
           Card(
             margin: const EdgeInsets.all(16.0),
-            elevation: 5,
+            elevation: 5.0,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10.0),
             ),
